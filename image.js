@@ -19,7 +19,7 @@ app.use(cors());
 
 // Middleware to restrict routes other than images
 app.use((req, res, next) => {
-  if (req.path.startsWith('/images')) {
+  if (req.path.startsWith('/images') || req.path.startsWith('/download')) {
     // Allow requests to /images route
     next();
   } else {
@@ -46,6 +46,20 @@ app.get('/:userId/:imageId', (req, res) => {
     }
 
     // Send the image file as response
+    res.sendFile(imagePath);
+  });
+});
+
+// New route to handle image downloads
+app.get('/download/:userId/:imageId', (req, res) => {
+  const { userId, imageId } = req.params;
+  const imagePath = path.join(USER_IMAGES_PATH, userId, imageId);
+  fs.access(imagePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error('Error accessing image file:', err);
+      return res.status(404).send('Image Not Found');
+    }
+    res.setHeader('Content-Disposition', `attachment; filename="${path.basename(imagePath)}"`);
     res.sendFile(imagePath);
   });
 });
