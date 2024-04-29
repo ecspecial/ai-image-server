@@ -53,7 +53,14 @@ app.get('/:userId/:imageId', (req, res) => {
 // New route to handle image downloads
 app.get('/download/:userId/:imageId', (req, res) => {
   const { userId, imageId } = req.params;
+  
+  console.log('userId', userId);
+  console.log('imageId', imageId);
+
   const imagePath = path.join(USER_IMAGES_PATH, userId, imageId);
+  
+  console.log('imagePath', imagePath);
+
   fs.access(imagePath, fs.constants.F_OK, (err) => {
     if (err) {
       console.error('Error accessing image file:', err);
