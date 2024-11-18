@@ -67,6 +67,9 @@ app.get('/download/:userId/:imageId', (req, res) => {
       return res.status(404).send('Image Not Found');
     }
     res.setHeader('Content-Disposition', `attachment; filename="${path.basename(imagePath)}"`);
+    const imageType = path.extname(imagePath).toLowerCase() === '.png' ? 'image/png' :
+                      path.extname(imagePath).toLowerCase() === '.jpg' || path.extname(imagePath).toLowerCase() === '.jpeg' ? 'image/jpeg' : 'application/octet-stream';
+    res.setHeader('Content-Type', imageType);
     res.sendFile(imagePath);
   });
 });
